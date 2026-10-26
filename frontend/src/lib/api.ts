@@ -1,4 +1,12 @@
-import { User, AuthTokens, Portfolio, Holding } from "@/types";
+import {
+  User,
+  AuthTokens,
+  Portfolio,
+  Holding,
+  PortfolioValuation,
+  CSVPreviewResponse,
+  CSVCommitResponse,
+} from "@/types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
@@ -144,6 +152,45 @@ class ApiClient {
     return this.request<void>(`/portfolios/${portfolioId}/holdings/${holdingId}`, {
       method: "DELETE",
     });
+  }
+
+  // --- Phase 2: Valuation Endpoints ---
+  async getPortfolioValuation(portfolioId: string, refresh: boolean = false): Promise<PortfolioValuation> {
+    const param = refresh ? "?refresh=true" : "";
+    return this.request<PortfolioValuation>(`/portfolios/${portfolioId}/valuation${param}`);
+  }
+
+  // --- Phase 2: CSV Import Endpoints ---
+  async downloadCSVTemplate(): Promise<string> {
+    const response = await fetch(`${API_BASE}/portfolios/csv/template`);
+    if (!response.ok) {
+      throw new Error("Failed to download CSV template");
+    }
+    return response.text();
+  }
+
+  async previewCSV(portfolioId: string, file: File): Promise<CSVPreviewResponse> {
+    const formData = new FormData();
+    formData.append("file", file);
+    return this.request<CSVPreviewResponse>(`/portfolios/${portfolioId}/csv/preview`, {
+      method: "POST",
+      body: formData,
+    });
+  }
+
+  async commitCSV(portfolioId: string, file: File): Promise<CSVCommitResponse> {
+    const formData = new FormData();
+    formData.append("file", file);
+    return this.request<CSVCommitResponse>(`/portfolios/${portfolioId}/csv/commit`, {
+      method: "POST",
+      body: formData,
+    });
+  }
+
+  // --- Phase 2: Market Data Endpoints ---
+  async getMarketQuote(symbol: string, refresh: boolean = false): Promise<any> {
+    const param = refresh ? "?refresh=true" : "";
+    return this.request<any>(`/market/quote/${encodeURIComponent(symbol)}${param}`);
   }
 }
 

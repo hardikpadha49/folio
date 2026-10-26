@@ -7,7 +7,7 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 from app.config import get_settings
 from app.core.exceptions import FolioPulseException, foliopulse_exception_handler
-from app.api.v1 import auth, portfolios, holdings
+from app.api.v1 import auth, portfolios, holdings, market
 
 settings = get_settings()
 
@@ -38,6 +38,7 @@ def create_app() -> FastAPI:
     app.include_router(auth.router, prefix=API_PREFIX)
     app.include_router(portfolios.router, prefix=API_PREFIX)
     app.include_router(holdings.router, prefix=API_PREFIX)
+    app.include_router(market.router, prefix=API_PREFIX)
 
     # ── Health check ─────────────────────────────────────────────────────────
     @app.get("/health", tags=["System"])
