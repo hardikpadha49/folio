@@ -22,10 +22,11 @@ bcrypt==4.2.1
 pydantic-settings==2.7.0
 python-dotenv==1.0.1
 
-# ----- Market Data & Analytics (Phase 2) -----
+# ----- Market Data & Analytics (Phase 2 & Phase 3) -----
 yfinance==0.2.54
 pandas==2.2.3
 numpy==2.2.3
+scipy>=1.15.0
 redis==5.2.1
 
 # ----- Testing -----
